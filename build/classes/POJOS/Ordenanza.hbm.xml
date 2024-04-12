@@ -1,0 +1,57 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated 8 abr. 2024 16:20:08 by Hibernate Tools 4.3.1 -->
+<hibernate-mapping>
+    <class name="POJOS.Ordenanza" table="ordenanza" catalog="sistemas2" optimistic-lock="version">
+        <id name="id" type="int">
+            <column name="id" />
+            <generator class="assigned" />
+        </id>
+        <property name="idOrdenanza" type="java.lang.Integer">
+            <column name="idOrdenanza" />
+        </property>
+        <property name="concepto" type="string">
+            <column name="concepto" length="50" />
+        </property>
+        <property name="subconcepto" type="string">
+            <column name="subconcepto" length="50" />
+        </property>
+        <property name="descripcion" type="string">
+            <column name="descripcion" length="50" />
+        </property>
+        <property name="acumulable" type="string">
+            <column name="acumulable" length="50" />
+        </property>
+        <property name="precioFijo" type="java.lang.Integer">
+            <column name="precioFijo" />
+        </property>
+        <property name="m3incluidos" type="java.lang.Integer">
+            <column name="m3incluidos" />
+        </property>
+        <property name="preciom3" type="java.lang.Integer">
+            <column name="preciom3" />
+        </property>
+        <property name="porcentaje" type="java.lang.Double">
+            <column name="porcentaje" precision="22" scale="0" />
+        </property>
+        <property name="conceptoRelacionado" type="java.lang.Integer">
+            <column name="conceptoRelacionado" />
+        </property>
+        <property name="iva" type="java.lang.Double">
+            <column name="IVA" precision="22" scale="0" />
+        </property>
+        <property name="pueblo" type="string">
+            <column name="pueblo" length="50" />
+        </property>
+        <property name="tipoCalculo" type="string">
+            <column name="tipoCalculo" length="50" />
+        </property>
+        <set name="relContribuyenteOrdenanzas" table="rel_contribuyente_ordenanza" inverse="true" lazy="true" fetch="select">
+            <key>
+                <column name="idOrdenanza" />
+            </key>
+            <one-to-many class="POJOS.RelContribuyenteOrdenanza" />
+        </set>
+    </class>
+</hibernate-mapping>

@@ -1,0 +1,72 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated 8 abr. 2024 16:20:08 by Hibernate Tools 4.3.1 -->
+<hibernate-mapping>
+    <class name="POJOS.Contribuyente" table="contribuyente" catalog="sistemas2" optimistic-lock="version">
+        <id name="idContribuyente" type="int">
+            <column name="idContribuyente" />
+            <generator class="assigned" />
+        </id>
+        <property name="nombre" type="string">
+            <column name="nombre" length="50" />
+        </property>
+        <property name="apellido1" type="string">
+            <column name="apellido1" length="50" />
+        </property>
+        <property name="apellido2" type="string">
+            <column name="apellido2" length="50" />
+        </property>
+        <property name="nifnie" type="string">
+            <column name="NIFNIE" length="50" />
+        </property>
+        <property name="direccion" type="string">
+            <column name="direccion" length="50" />
+        </property>
+        <property name="numero" type="string">
+            <column name="numero" length="50" />
+        </property>
+        <property name="paisCcc" type="string">
+            <column name="paisCCC" length="50" />
+        </property>
+        <property name="ccc" type="string">
+            <column name="CCC" length="50" />
+        </property>
+        <property name="iban" type="string">
+            <column name="IBAN" length="50" />
+        </property>
+        <property name="eemail" type="string">
+            <column name="eEmail" length="50" />
+        </property>
+        <property name="exencion" type="string">
+            <column name="exencion" length="1" />
+        </property>
+        <property name="bonificacion" type="java.lang.Double">
+            <column name="bonificacion" precision="22" scale="0" />
+        </property>
+        <property name="fechaAlta" type="date">
+            <column name="fechaAlta" length="10" />
+        </property>
+        <property name="fechaBaja" type="date">
+            <column name="fechaBaja" length="10" />
+        </property>
+        <set name="reciboses" table="recibos" inverse="true" lazy="true" fetch="select">
+            <key>
+                <column name="idContribuyente" />
+            </key>
+            <one-to-many class="POJOS.Recibos" />
+        </set>
+        <set name="lecturases" table="lecturas" inverse="true" lazy="true" fetch="select">
+            <key>
+                <column name="idContribuyente" />
+            </key>
+            <one-to-many class="POJOS.Lecturas" />
+        </set>
+        <set name="relContribuyenteOrdenanzas" table="rel_contribuyente_ordenanza" inverse="true" lazy="true" fetch="select">
+            <key>
+                <column name="idContribuyente" />
+            </key>
+            <one-to-many class="POJOS.RelContribuyenteOrdenanza" />
+        </set>
+    </class>
+</hibernate-mapping>

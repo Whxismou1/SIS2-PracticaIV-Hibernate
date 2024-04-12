@@ -1,0 +1,27 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated 8 abr. 2024 16:20:08 by Hibernate Tools 4.3.1 -->
+<hibernate-mapping>
+    <class name="POJOS.Lecturas" table="lecturas" catalog="sistemas2" optimistic-lock="version">
+        <id name="id" type="int">
+            <column name="id" />
+            <generator class="assigned" />
+        </id>
+        <many-to-one name="contribuyente" class="POJOS.Contribuyente" fetch="select">
+            <column name="idContribuyente" />
+        </many-to-one>
+        <property name="ejercicio" type="string">
+            <column name="ejercicio" length="50" />
+        </property>
+        <property name="periodo" type="string">
+            <column name="periodo" length="50" />
+        </property>
+        <property name="lecturaAnterior" type="java.lang.Integer">
+            <column name="lecturaAnterior" />
+        </property>
+        <property name="lecturaActual" type="java.lang.Integer">
+            <column name="lecturaActual" />
+        </property>
+    </class>
+</hibernate-mapping>
