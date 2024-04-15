@@ -6,9 +6,11 @@
 package mainpkg;
 
 import POJOS.Contribuyente;
+import POJOS.Lineasrecibo;
 import POJOS.Recibos;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 import org.hibernate.Hibernate;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
@@ -44,6 +46,7 @@ public class Coordinator {
         actualizarImporteTotalRecibos(contribuyenteActual);
         eliminarRecibosConBaseImponibleMenorQueMedia(contribuyenteActual);
         mainMenu.closeScanner();
+        System.exit(0);
     }
 
     private boolean isNIFOnBBDD(String nif) {
@@ -95,6 +98,7 @@ public class Coordinator {
     }
 
     private void printInfoContribuyente(Contribuyente contribuyente) {
+        System.out.println("-----------------------------------------------------");
         System.out.println("Información del Contribuyente:");
         System.out.println("ID: " + contribuyente.getIdContribuyente());
         System.out.println("Nombre: " + contribuyente.getNombre());
@@ -110,6 +114,7 @@ public class Coordinator {
         System.out.println("Bonificación: " + contribuyente.getBonificacion());
         System.out.println("Fecha de Alta: " + contribuyente.getFechaAlta());
         System.out.println("Fecha de Baja: " + contribuyente.getFechaBaja());
+        System.out.println("-----------------------------------------------------");
     }
 
     private void actualizarImporteTotalRecibos(Contribuyente contribuyenteActual) {
@@ -147,30 +152,30 @@ public class Coordinator {
             session = HibernateUtil.getSessionFactory().openSession();
             transac = session.beginTransaction();
 
-            // Consulta para obtener la lista de bases imponibles de los recibos del contribuyente
-            String hql = "SELECT lr.recibos.numeroRecibo FROM Lineasrecibo lr WHERE lr.recibos.contribuyente.idContribuyente = :idContribuyente";
-            Query<Integer> query = session.createQuery(hql, Integer.class);
-            query.setParameter("idContribuyente", contribuyenteActual.getIdContribuyente());
-            List<Integer> numerosRecibos = query.getResultList();
+            String hqlMedia = "SELECT AVG(r.totalBaseImponible) FROM Recibos r";
+            Query<Double> queryMedia = session.createQuery(hqlMedia, Double.class);
+            Double mediaBaseImponible = queryMedia.uniqueResult();
+            System.out.println("Media base imponible: " + mediaBaseImponible);
 
-            if (!numerosRecibos.isEmpty()) {
-                // Consulta para calcular la media de las bases imponibles de los recibos del contribuyente
-                String hqlMedia = "SELECT AVG(lr.baseImponible) FROM Lineasrecibo lr WHERE lr.recibos.numeroRecibo IN (:numerosRecibos)";
-                Query<Double> queryMedia = session.createQuery(hqlMedia, Double.class);
-                queryMedia.setParameterList("numerosRecibos", numerosRecibos);
-                Double mediaBaseImponible = queryMedia.uniqueResult();
+            String hqlEliminarRecibos = "FROM Recibos r WHERE r.totalBaseImponible < :media";
+            Query<Recibos> eliminarRecibos = session.createQuery(hqlEliminarRecibos, Recibos.class);
+            eliminarRecibos.setParameter("media", mediaBaseImponible);
+            List<Recibos> recibosAEliminar = eliminarRecibos.getResultList();
+            int count = recibosAEliminar.size();
+            for (Recibos recibo : recibosAEliminar) {
 
-                // Consulta para eliminar los recibos cuya base imponible sea menor que la media
-                String hqlEliminarRecibos = "DELETE FROM Recibos r WHERE r.totalBaseImponible < :media";
-                Query queryEliminarRecibos = session.createQuery(hqlEliminarRecibos);
-                queryEliminarRecibos.setParameter("media", mediaBaseImponible);
-                int filasEliminadasRecibos = queryEliminarRecibos.executeUpdate();
+                Set<Lineasrecibo> lineasrecibos = recibo.getLineasrecibos();
 
-                transac.commit();
-                System.out.println("Se han eliminado " + filasEliminadasRecibos + " recibos con base imponible menor que la media.");
-            } else {
-                System.out.println("No hay recibos para eliminar.");
+                // Eliminar cada línea de recibo
+                for (Lineasrecibo linea : lineasrecibos) {
+                    session.delete(linea);
+                }
+
+                session.delete(recibo);
             }
+
+            session.getTransaction().commit();
+            System.out.println("Se han eliminado " + count + " registros ");
         } catch (Exception e) {
             if (transac != null) {
                 transac.rollback();
@@ -182,26 +187,6 @@ public class Coordinator {
             }
         }
 
-    }
-
-    private double getMediaBases(Contribuyente contribuyente) {
-        Session session = null;
-        try {
-            session = HibernateUtil.getSessionFactory().openSession();
-
-            // Consulta para obtener la media de las bases imponibles de los recibos del contribuyente
-            String hql = "SELECT AVG(r.totalBaseImponible) FROM Recibos r WHERE r.contribuyente.idContribuyente = :idContribuyente";
-            Query<Double> query = session.createQuery(hql, Double.class);
-            query.setParameter("idContribuyente", contribuyente.getIdContribuyente());
-            return query.uniqueResult();
-        } catch (Exception e) {
-            e.printStackTrace();
-            return 0.0; // En caso de error, devolver 0.0
-        } finally {
-            if (session != null) {
-                session.close();
-            }
-        }
     }
 
 }
