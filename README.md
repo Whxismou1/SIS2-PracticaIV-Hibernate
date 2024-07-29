@@ -2,7 +2,7 @@
 
 ## Descripción
 
-Esta es la primera práctica de la asignatura Sistemas de la Información 2 de tercer curso de Ingeniería Informática de la Universidad de León. En esta práctica, se utiliza Java junto con Hibernate para crear un programa que:
+Esta es la primera practica de Java y cuarta práctica de la asignatura Sistemas de la Información 2 de tercer curso de Ingeniería Informática de la Universidad de León. En esta práctica, se utiliza Java junto con Hibernate para crear un programa que:
 
 1. Obtiene, a partir de un DNI o NIF, la información de un contribuyente.
 2. Imprime la información del contribuyente.
