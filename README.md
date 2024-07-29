@@ -1,4 +1,4 @@
-#  SIS 2: Práctica 1 Hibernate + Java
+#  SIS 2: Práctica 4 Hibernate + Java
 
 ## Descripción
 
